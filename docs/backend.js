@@ -1,6 +1,12 @@
 const API_STORE='pzApiBase';
 const TOKEN_STORE='pzToken';
-function apiBase(){return String(localStorage.getItem(API_STORE)||'').replace(/\/$/,'')}
+const DEFAULT_API='https://pirozhok-api.onrender.com';
+const LOCAL_SENTINEL='__local__';
+function apiBase(){
+  const saved=localStorage.getItem(API_STORE);
+  if(saved===LOCAL_SENTINEL)return '';
+  return String(saved||DEFAULT_API).replace(/\/$/,'');
+}
 function apiToken(){return localStorage.getItem(TOKEN_STORE)||''}
 function apiEnabled(){return !!apiBase()}
 async function apiRequest(path,options={}){
@@ -18,9 +24,10 @@ async function apiRequest(path,options={}){
 }
 function setApiBase(value){
   const clean=String(value||'').trim().replace(/\/$/,'');
-  if(clean)localStorage.setItem(API_STORE,clean);else localStorage.removeItem(API_STORE);
+  if(clean)localStorage.setItem(API_STORE,clean);else localStorage.setItem(API_STORE,LOCAL_SENTINEL);
   renderBackendStatus();
 }
+function useDefaultApi(){localStorage.removeItem(API_STORE);renderBackendStatus()}
 function setApiSession(payload){
   if(payload?.token)localStorage.setItem(TOKEN_STORE,payload.token);
   if(payload?.user){
