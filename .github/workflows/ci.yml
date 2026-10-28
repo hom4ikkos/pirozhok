@@ -18,6 +18,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Check public demo JavaScript
+        run: |
+          node --check docs/backend.js
+          node --check docs/app1.js
+          node --check docs/app2.js
+          node --check docs/app3.js
+          node --check docs/api-mode.js
       - name: Install dependencies
         run: npm install --no-audit --no-fund
       - name: Seed test database
