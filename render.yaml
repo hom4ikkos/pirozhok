@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: pirozhok-api
+    runtime: node
+    plan: free
+    branch: main
+    autoDeploy: true
+    buildCommand: npm install --no-audit --no-fund && npm run build
+    startCommand: npm run db:seed && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0
+      - key: DATABASE_PATH
+        value: /opt/render/project/src/data/pirozhok.db
+      - key: ADMIN_PASSWORD
+        generateValue: true
