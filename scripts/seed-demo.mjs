@@ -35,6 +35,8 @@ const videos = [
   ['Tiny studio, big ideas','mira','Category 1','long',697,img+'ForBiggerFun.jpg',src.bunny,4100],
   ['Why this UI feels fast','lena','Category 4','long',415,img+'Sintel.jpg',src.bunny,18000],
   ['The weekend experiment','alex','Category 5','long',1398,img+'TearsOfSteel.jpg',src.flower,9700],
+  ['I tried making a film in one day','noah','Category 2','long',1066,img+'ForBiggerJoyrides.jpg',src.bunny,22000],
+  ['A very unnecessary camera test','lena','Category 3','long',553,img+'ForBiggerBlazes.jpg',src.bunny,13000],
   ['Flower loop','mira','Category 1','short',28,img+'ForBiggerFun.jpg',src.flower,5600],
   ['Bunny vertical test','alex','Category 2','short',10,img+'BigBuckBunny.jpg',src.bunny,4300],
   ['Late night short','lena','Category 4','short',10,img+'Sintel.jpg',src.bunny,8100],
