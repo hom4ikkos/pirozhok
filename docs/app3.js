@@ -5,12 +5,32 @@ function openAuthor(username){let p=P.find(x=>x[1]===username);if(!p)return;let 
 function toggleSub(username){let s=S();s.subs[username]=!s.subs[username];put(s);openAuthor(username);toast(s.subs[username]?'Subscribed':'Unsubscribed')}
 function searchAll(q){q=q.trim().toLowerCase();if(!q){searchResults.classList.remove('on');searchResults.innerHTML='';return}let vv=V.filter(v=>(v.title+' '+v.author+' '+v.user).toLowerCase().includes(q)).slice(0,5),pp=P.filter(p=>(p[0]+' '+p[1]).toLowerCase().includes(q)).slice(0,5);searchResults.classList.add('on');searchResults.innerHTML=`${vv.length?`<div class="searchTitle">Videos</div>${vv.map(v=>`<div class="resultVideo" onclick="openVideo('${v.id}')"><img src="${v.img}"><div><b>${esc(v.title)}</b><div class="small">${esc(v.author)} · ${v.views} views</div></div></div>`).join('')}`:''}${pp.length?`<div class="searchTitle">People</div>${pp.map(p=>`<div class="person resultPerson" onclick="openAuthor('${p[1]}')"><div class="av">${p[2]}</div><div><b>${p[0]}</b><div class="small">@${p[1]}</div></div></div>`).join('')}`:''}${!vv.length&&!pp.length?'<div class="empty">Nothing found</div>':''}`}
 function U(){try{return JSON.parse(localStorage.pzuser||'null')}catch{return null}}
-function register(){if(!name.value.trim()||!user.value.trim()||!email.value.trim()||!pass.value)return toast('Fill all fields');localStorage.pzuser=JSON.stringify({name:name.value.trim(),user:user.value.trim().replace(/^@/,'')});auth.classList.add('hide');profile()}
-function demoLogin(){localStorage.pzuser=JSON.stringify({name:'Pirozhok User',user:'pirozhok'});auth.classList.add('hide');profile()}
-function logout(){delete localStorage.pzuser;auth.classList.remove('hide')}
+async function register(){
+  const displayName=name.value.trim(),username=user.value.trim().replace(/^@/,''),mail=email.value.trim(),password=pass.value;
+  if(!displayName||!username||!mail||!password)return toast('Fill all fields');
+  if(apiEnabled()){
+    try{await apiRegisterAccount({displayName,username,email:mail,password});auth.classList.add('hide');profile();toast('Account created on backend')}catch(e){toast(e.message)}
+    return;
+  }
+  localStorage.pzuser=JSON.stringify({name:displayName,user:username,email:mail});auth.classList.add('hide');profile();toast('Local demo account created')
+}
+async function signIn(){
+  const login=(user.value.trim()||email.value.trim()).replace(/^@/,''),password=pass.value;
+  if(!login||!password)return toast('Enter username/email and password');
+  if(!apiEnabled())return toast('Connect backend in Settings first');
+  try{await apiLoginAccount({login,password});auth.classList.add('hide');profile();toast('Signed in')}catch(e){toast(e.message)}
+}
+async function demoLogin(){
+  if(apiEnabled()){
+    try{await apiLoginAccount({login:'mira',password:'demo123'});auth.classList.add('hide');profile();toast('Backend demo login')}catch(e){toast(e.message)}
+    return;
+  }
+  localStorage.pzuser=JSON.stringify({name:'Pirozhok User',user:'pirozhok'});auth.classList.add('hide');profile()
+}
+async function logout(){if(apiEnabled())await apiLogoutAccount();delete localStorage.pzuser;auth.classList.remove('hide');profile()}
 function toast(x){let t=document.getElementById('toast');t.textContent=x;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1400)}
 function fmt(n){return n>=1000?(n/1000).toFixed(n>=10000?0:1)+'K':n}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function jsq(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
 document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));let p=document.getElementById(b.dataset.p);p.classList.add('on');if(b.dataset.p==='profile')profile();if(b.dataset.p==='friends'){pauseShorts();closeChat();people()}else if(b.dataset.p==='shorts'){setTimeout(()=>{let first=document.querySelector('.short video');if(first){first.muted=!S().shortSound;first.play().catch(()=>{})}},50)}else pauseShorts()});
-chips();grid();people();profile();renderShorts();if(U())auth.classList.add('hide');
+chips();grid();people();profile();renderShorts();renderBackendStatus();if(U())auth.classList.add('hide');
