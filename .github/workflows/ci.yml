@@ -29,3 +29,20 @@ jobs:
         env:
           DATABASE_PATH: /tmp/pirozhok-ci.db
         run: npm run build
+      - name: Runtime health smoke test
+        env:
+          DATABASE_PATH: /tmp/pirozhok-ci.db
+          PORT: 3000
+        run: |
+          npm start > /tmp/pirozhok-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          for i in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:3000/api/health > /tmp/health.json; then
+              cat /tmp/health.json
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/pirozhok-server.log
+          exit 1
