@@ -27,7 +27,7 @@ jobs:
         run: npm run db:seed
       - name: Build Next.js app
         env:
-          DATABASE_PATH: /tmp/pirozhok-ci.db
+          PIROZHOK_BUILD: '1'
         run: npm run build
       - name: Runtime health smoke test
         env:
