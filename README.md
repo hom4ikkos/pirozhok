@@ -2,6 +2,8 @@
 
 A runnable Next.js prototype with real accounts, SQLite data, long videos, Shorts, friends, 1:1 chats, reactions, comments, save folders, profiles, creator tools and an admin panel.
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/hom4ikkos/pirozhok)
+
 ## What is implemented
 
 - Email/password registration, no email confirmation
@@ -21,13 +23,33 @@ A runnable Next.js prototype with real accounts, SQLite data, long videos, Short
 - Creator panel: publish long/short videos by direct URL
 - Dark mobile-first UI and fixed bottom navigation
 
+## Public demo
+
+Static interactive demo: https://hom4ikkos.github.io/pirozhok/
+
+The static demo keeps its demo state in the browser. The Next.js app in this repository contains the real backend/API.
+
+## Render deployment
+
+The repository includes a root `render.yaml`. Render creates a free `pirozhok-api` web service, builds the Next.js app, seeds demo content, and checks `/api/health`.
+
+After deployment, verify:
+
+```text
+https://<your-render-host>/api/health
+```
+
+The API supports HttpOnly cookie sessions for same-origin clients and Bearer tokens for the separate GitHub Pages frontend. CORS is restricted to the Pirozhok GitHub Pages origin and localhost development origins.
+
+Important: SQLite on a free Render web service is suitable for testing but is not persistent storage. A production version should move to PostgreSQL or use a persistent disk before real user data matters.
+
 ## Local start
 
 Requires Node.js 22.5+ (the project uses the built-in `node:sqlite` module).
 
 ```bash
 npm install
-npm run db:init
+npm run db:seed
 npm run dev
 ```
 
