@@ -1,0 +1,2 @@
+import { db } from '@/lib/db'; import { requireUser } from '@/lib/auth'; import { ok,fail,apiError } from '@/lib/api';
+export async function POST(req){try{const u=await requireUser(); const {requestId,accept}=await req.json(); const r=db.prepare('SELECT * FROM friend_requests WHERE id=? AND receiver_id=? AND status=\'pending\'').get(requestId,u.id); if(!r) return fail('Request not found',404); db.prepare('UPDATE friend_requests SET status=? WHERE id=?').run(accept?'accepted':'declined',requestId); return ok({ok:true});}catch(e){return apiError(e)}}

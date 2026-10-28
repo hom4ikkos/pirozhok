@@ -1,0 +1,3 @@
+import Link from 'next/link';
+function dur(s){if(!s)return ''; const m=Math.floor(s/60),sec=s%60; return `${m}:${String(sec).padStart(2,'0')}`}
+export default function VideoCard({video}){return <Link className="video-card" href={`/video/${video.id}`}><div className="thumb">{video.thumbnail_url?<img src={video.thumbnail_url} alt=""/>:<div className="thumb-empty">PIROZHOK</div>}{video.duration_seconds?<span className="duration">{dur(video.duration_seconds)}</span>:null}</div><div className="card-title">{video.title}</div><div className="card-meta">{video.author_name||video.author_username} · {video.views||0} views</div></Link>}

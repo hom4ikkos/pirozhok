@@ -1,0 +1,9 @@
+{
+  "name": "Пирожок",
+  "short_name": "Пирожок",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "description": "Videos are better with friends."
+}

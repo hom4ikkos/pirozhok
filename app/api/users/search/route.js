@@ -1,0 +1,2 @@
+import { db } from '@/lib/db'; import { requireUser } from '@/lib/auth'; import { ok,apiError } from '@/lib/api';
+export async function GET(req){try{const u=await requireUser(); const q=(new URL(req.url)).searchParams.get('q')||''; if(!q.trim()) return ok({users:[]}); const users=db.prepare(`SELECT id,username,display_name,avatar_url FROM users WHERE id<>? AND (username LIKE ? OR display_name LIKE ?) LIMIT 20`).all(u.id,`%${q}%`,`%${q}%`); return ok({users});}catch(e){return apiError(e)}}

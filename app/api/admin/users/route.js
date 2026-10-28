@@ -1,0 +1,3 @@
+import { db } from '@/lib/db'; import { requireRole } from '@/lib/auth'; import { ok,fail,apiError } from '@/lib/api';
+export async function GET(){try{await requireRole(['admin']); return ok({users:db.prepare('SELECT id,email,username,display_name,role,created_at FROM users ORDER BY id DESC').all()});}catch(e){return apiError(e)}}
+export async function POST(req){try{await requireRole(['admin']); const {username,role}=await req.json(); if(!['user','author','admin'].includes(role)) return fail('Invalid role'); db.prepare('UPDATE users SET role=? WHERE username=?').run(role,username); return ok({ok:true});}catch(e){return apiError(e)}}
